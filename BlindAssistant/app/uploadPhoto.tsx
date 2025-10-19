@@ -1,23 +1,23 @@
-import * as FileSystem from "expo-file-system";
+import { File } from "expo-file-system";
+
+const SERVER_HOST = "10.226.105.187:8001";
 
 async function uploadPhoto(uri: string) {
   try {
     // Read file as binary
-    const fileInfo = await FileSystem.getInfoAsync(uri);
-    if (!fileInfo.exists) throw new Error("File not found");
+    if (!uri) {
+      console.error("No URI provided for upload.");
+      return;
+    }
 
-    const formData = new FormData();
-    formData.append("photo", {
-      uri,
-      name: `photo_${Date.now()}.jpg`,
-      type: "image/jpeg",
-    } as any);
+    const file = new File(uri);
+    const b64 = await file.base64();
 
-    const response = await fetch("https://your-backend.com/upload", {
+    const response = await fetch(`http://${SERVER_HOST}/should_upload`, {
       method: "POST",
-      body: formData,
+      body: JSON.stringify({ image_base64: b64 }),
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
     });
 
