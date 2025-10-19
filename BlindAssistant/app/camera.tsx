@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
 import { CameraView, useCameraPermissions, CameraCapturedPicture } from "expo-camera";
+import uploadPhoto from "./uploadPhoto";
+
 
 export default function AutoCaptureCamera() {
   // Capture runs automatically once permissions are granted
@@ -22,6 +24,9 @@ export default function AutoCaptureCamera() {
             quality: 0.5,
             skipProcessing: true,
           });
+          setPhotoUri(photo.uri);
+          await uploadPhoto(photo.uri);
+
           setPhotoUri(photo.uri);
           console.log("Captured photo:", photo.uri);
         } catch (err) {
