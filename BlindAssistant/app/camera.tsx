@@ -42,7 +42,7 @@ export default function AutoCaptureCamera() {
           console.error("Error taking picture:", err);
         }
       }
-    }, 1000);
+    }, 3500);
 
     return () => {
       if (captureIntervalRef.current) {

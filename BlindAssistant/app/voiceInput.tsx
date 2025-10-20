@@ -37,7 +37,7 @@ export default function VoiceRecognition() {
       console.log(event.results[event.results.length - 1].transcript);
       if (event.results[event.results.length - 1].transcript.toLowerCase().includes("take photo") ||
           event.results[event.results.length - 1].transcript.toLowerCase().includes("take a photo")) {
-            speakObjects("Taking a photo")
+            speakObjects("Analyzing the scene.");
         
             uploadLastPhotoAndDescribe();
       }
