@@ -21,12 +21,12 @@ async function uploadPhoto(uri: string) {
       },
     });
 
-    const data = await response.json();
-    console.log("Upload response:", data);
-  } catch (error) {
-    console.error("Upload failed:", error);
-  }
-}
+//     const data = await response.json();
+//     console.log("Upload response:", data);
+//   } catch (error) {
+//     console.error("Upload failed:", error);
+//   }
+// }
 
 
-export default uploadPhoto;
+// export default uploadPhoto;

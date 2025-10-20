@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
-import CameraScreen from "./camera";
+// import CameraScreen from "./camera";
+import VoiceRecognition from "./voiceInput";
 
 export default function Index() {
   return (
@@ -10,7 +11,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <CameraScreen />
+      <VoiceRecognition />
     </View>
   );
 }
