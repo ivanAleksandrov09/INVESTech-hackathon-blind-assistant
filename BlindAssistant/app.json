@@ -19,13 +19,18 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permissions.RECORD_AUDIO"
+      ],
+      "package": "com.ivan444.blindassistant"
     },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-speech-recognition",
       "expo-router",
       [
         "expo-splash-screen",
@@ -43,6 +48,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bd78526c-5149-4b64-bc04-e6696cc0854f"
+      }
     }
   }
 }
