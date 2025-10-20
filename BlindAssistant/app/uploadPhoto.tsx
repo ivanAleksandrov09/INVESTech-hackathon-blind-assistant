@@ -1,25 +1,25 @@
-// import * as FileSystem from "expo-file-system";
+import { File } from "expo-file-system";
 
-// async function uploadPhoto(uri: string) {
-//   try {
-//     // Read file as binary
-//     const fileInfo = await FileSystem.getInfoAsync(uri);
-//     if (!fileInfo.exists) throw new Error("File not found");
+const SERVER_HOST = "10.226.105.187:8001";
 
-//     const formData = new FormData();
-//     formData.append("photo", {
-//       uri,
-//       name: `photo_${Date.now()}.jpg`,
-//       type: "image/jpeg",
-//     } as any);
+async function uploadPhoto(uri: string) {
+  try {
+    // Read file as binary
+    if (!uri) {
+      console.error("No URI provided for upload.");
+      return;
+    }
 
-//     const response = await fetch("https://your-backend.com/upload", {
-//       method: "POST",
-//       body: formData,
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
+    const file = new File(uri);
+    const b64 = await file.base64();
+
+    const response = await fetch(`http://${SERVER_HOST}/should_upload`, {
+      method: "POST",
+      body: JSON.stringify({ image_base64: b64 }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
 //     const data = await response.json();
 //     console.log("Upload response:", data);
