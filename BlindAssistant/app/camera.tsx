@@ -7,6 +7,7 @@ import uploadPhoto from "./uploadPhoto";
 export default function AutoCaptureCamera() {
   // Capture runs automatically once permissions are granted
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [objectNames, setObjectNames] = useState<string[] | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const captureIntervalRef = useRef<number | null>(null);
 
@@ -25,7 +26,8 @@ export default function AutoCaptureCamera() {
             skipProcessing: true,
           });
           setPhotoUri(photo.uri);
-          await uploadPhoto(photo.uri);
+          const uploadedObjectNames = await uploadPhoto(photo.uri);
+          if (uploadedObjectNames) setObjectNames(uploadedObjectNames);
 
           setPhotoUri(photo.uri);
           console.log("Captured photo:", photo.uri);
@@ -61,18 +63,51 @@ export default function AutoCaptureCamera() {
 
 
   return (
-    <View style={{ flex: 1 }}>
-      <CameraView ref={cameraRef} facing="back" />
-      <View style={{ position: "absolute", bottom: 20, alignSelf: "center", alignItems: "center" }}>
-        {/* capturing runs automatically; no toggle */}
-         {photoUri && (
-           <Image
-             source={{ uri: photoUri }}
-             style={{ width: 100, height: 100, marginTop: 10 }}
-           />
-         )}
-       </View>
-     </View>
-   );
- };
- 
+  <View style={{ flex: 1, position: "relative", backgroundColor: "black" }}>
+    {/* Text overlay on top */}
+    <Text
+      style={{
+        position: "absolute",
+        top: 50,
+        width: "100%",
+        textAlign: "center",
+        color: "white",
+        fontSize: 18,
+        fontWeight: "600",
+        zIndex: 2,
+        textShadowColor: "rgba(0,0,0,0.7)",
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 4,
+      }}
+    >
+      {objectNames ? objectNames.join(", ") : "No objects detected"}
+    </Text>
+
+    {/* Camera view */}
+    <CameraView ref={cameraRef} facing="back" style={{ flex: 1 }} />
+
+    {/* Captured photo at bottom */}
+    {photoUri && (
+      <View
+        style={{
+          position: "absolute",
+          bottom: 20,
+          alignSelf: "center",
+          zIndex: 1,
+        }}
+      >
+        <Image
+          source={{ uri: photoUri }}
+          style={{
+            width: 120,
+            height: 120,
+            borderRadius: 10,
+            borderWidth: 2,
+            borderColor: "#fff",
+          }}
+        />
+      </View>
+    )}
+  </View>
+);
+};

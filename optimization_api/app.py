@@ -13,7 +13,7 @@ app = FastAPI()
 # we store the last embedding in the local memory
 last_embedding: Optional[np.ndarray] = None
 
-SIMILARITY_THRESHOLD = 0.95
+SIMILARITY_THRESHOLD = 0.8
 
 class ThumbRequest(BaseModel):
     image_base64: str

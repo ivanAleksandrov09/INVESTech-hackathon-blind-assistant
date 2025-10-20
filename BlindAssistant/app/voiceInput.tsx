@@ -14,6 +14,8 @@ export default function VoiceRecognition() {
   const shouldRestartRef = useRef(true);
   const transcriptRef = useRef("");
 
+  let seconds_passed = 0;
+
   useSpeechRecognitionEvent("start", () => setRecognizing(true));
   useSpeechRecognitionEvent("end", () => {
     setRecognizing(false);
@@ -29,7 +31,14 @@ export default function VoiceRecognition() {
     }
   });
   useSpeechRecognitionEvent("result", (event) => {
-    if (event?.results?.[0]?.transcript) transcriptRef.current = event.results[0].transcript;
+    if (event?.results?.[0]?.transcript) {
+      transcriptRef.current = event.results[0].transcript;
+    } else {
+      if (++seconds_passed >= 3 && transcriptRef.current) {
+        // gemini_api(transcriptRef.current);
+        seconds_passed = 0;
+      }
+    }
 
     setTranscript(event?.results?.[0]?.transcript ?? transcriptRef.current);
   });
