@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 // import CameraScreen from "./camera";
 import VoiceRecognition from "./voiceInput";
+import AutoCaptureCamera from "./camera";
 
 export default function Index() {
   return (
@@ -12,6 +13,7 @@ export default function Index() {
       }}
     >
       <VoiceRecognition />
+      <AutoCaptureCamera />
     </View>
   );
 }

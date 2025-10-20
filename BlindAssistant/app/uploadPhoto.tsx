@@ -1,8 +1,8 @@
 import { File } from "expo-file-system";
 
-const SERVER_HOST = "10.226.105.187:8001";
+const SERVER_HOST = "10.226.105.159:8001";
 
-async function uploadPhoto(uri: string) {
+export default async function uploadPhoto(uri: string) {
   try {
     // Read file as binary
     if (!uri) {
@@ -20,13 +20,10 @@ async function uploadPhoto(uri: string) {
         "Content-Type": "application/json",
       },
     });
-
-//     const data = await response.json();
-//     console.log("Upload response:", data);
-//   } catch (error) {
-//     console.error("Upload failed:", error);
-//   }
-// }
-
-
-// export default uploadPhoto;
+    
+    const data = await response.json();
+    console.log("Server response:", data);
+  } catch (error) {
+    console.error("Error uploading photo:", error);
+  }
+}
