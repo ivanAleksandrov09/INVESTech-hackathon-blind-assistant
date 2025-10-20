@@ -1,7 +1,7 @@
 import { File } from "expo-file-system";
 
-const FASTAPI_SERVER_HOST = "10.226.105.159:8001";
-const FLASK_SERVER_HOST = "10.226.105.188:5000";
+const FASTAPI_SERVER_HOST = "10.226.105.187:8001";
+const FLASK_SERVER_HOST = "10.226.105.187:5000";
 
 interface Detection {
   box: Array<number>;

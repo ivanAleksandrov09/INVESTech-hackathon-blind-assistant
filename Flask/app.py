@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
 from PIL import Image
@@ -5,10 +6,63 @@ import os
 import io
 import base64
 import numpy as np
+from flask import Flask, request, jsonify
+from google import genai
+from PIL import Image  
+
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
 
 model = YOLO("yolo11n.pt")
+
+
+
+@app.route('/commands', methods=['POST'])
+def commands():
+    try:
+        image_file = request.get_json()['image_b64']
+
+        if not image_file:
+            return jsonify({"error": "Missing image file ('photo')"}), 400
+
+
+
+        image_bytes = io.BytesIO(base64.b64decode(image_file))
+        ai_uploaded_file = client.files.upload(
+            file=(image_bytes),
+            config={"mime_type": "image/jpeg"},
+        )
+
+        if not ai_uploaded_file:
+            return jsonify({"error": "Failed to upload image"}), 500
+
+        
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=[
+                ai_uploaded_file,
+                "Describe the image briefly as if you were talking directly with a blind person (very short, one or two sentences). Start replying to the person right away without saying anything about the image upload."
+            ],
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "description": "A brief description of the image for a blind person."
+                        }
+                    },
+                    "required": ["description"]
+                },
+            },
+        )
+
+        return jsonify({"response": json.loads(response.text)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def index():
@@ -49,4 +103,3 @@ def detect():
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-

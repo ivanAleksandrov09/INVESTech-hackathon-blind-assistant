@@ -13,7 +13,7 @@ app = FastAPI()
 # we store the last embedding in the local memory
 last_embedding: Optional[np.ndarray] = None
 
-SIMILARITY_THRESHOLD = 0.8
+SIMILARITY_THRESHOLD = 0.95
 
 class ThumbRequest(BaseModel):
     image_base64: str
@@ -60,6 +60,7 @@ async def should_upload(req: ThumbRequest):
 
     if similarity < SIMILARITY_THRESHOLD:
         last_embedding = embedding
+        print("uploading new picture")
         return {"shouldUpload": True, "reason": f"diff(sim={similarity:.3f})"}
     else:
         return {"shouldUpload": False, "reason": f"similar(sim={similarity:.3f})"}

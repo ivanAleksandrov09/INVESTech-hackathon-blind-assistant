@@ -4,6 +4,10 @@ import {
 } from "expo-speech-recognition";
 import { useEffect, useRef, useState } from "react";
 import { View, Text, Button, ScrollView } from "react-native";
+import { getLastPhotoBase64 } from "./storage";
+import speakObjects from "./tts";
+
+const FLASK_SERVER_HOST = "10.226.105.187:5000";
 
 export default function VoiceRecognition() {
   const [recognizing, setRecognizing] = useState(false);
@@ -13,8 +17,6 @@ export default function VoiceRecognition() {
   const mountedRef = useRef(true);
   const shouldRestartRef = useRef(true);
   const transcriptRef = useRef("");
-
-  let seconds_passed = 0;
 
   useSpeechRecognitionEvent("start", () => setRecognizing(true));
   useSpeechRecognitionEvent("end", () => {
@@ -32,12 +34,15 @@ export default function VoiceRecognition() {
   });
   useSpeechRecognitionEvent("result", (event) => {
     if (event?.results?.[0]?.transcript) {
-      transcriptRef.current = event.results[0].transcript;
-    } else {
-      if (++seconds_passed >= 3 && transcriptRef.current) {
-        // gemini_api(transcriptRef.current);
-        seconds_passed = 0;
+      console.log(event.results[event.results.length - 1].transcript);
+      if (event.results[event.results.length - 1].transcript.toLowerCase().includes("take photo") ||
+          event.results[event.results.length - 1].transcript.toLowerCase().includes("take a photo")) {
+            speakObjects("Taking a photo")
+        
+            uploadLastPhotoAndDescribe();
       }
+
+      transcriptRef.current = event.results[0].transcript;
     }
 
     setTranscript(event?.results?.[0]?.transcript ?? transcriptRef.current);
@@ -89,6 +94,25 @@ export default function VoiceRecognition() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const uploadLastPhotoAndDescribe = async () => {
+    const b64 = await getLastPhotoBase64();
+
+    const response = await fetch(`http://${FLASK_SERVER_HOST}/commands`, {
+      method: "POST",
+      body: JSON.stringify({ image_b64: b64 }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Response received for /commands");
+
+    const data = await response.json();
+    speakObjects(data["response"]["description"])
+
+    setTimeout(() => {}, 5000);
+  }
 
   return (
     <View>

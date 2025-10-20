@@ -2,3 +2,6 @@ flask
 ultralytics
 pillow
 opencv-python
+pytho-dotenv
+google-genai
+
