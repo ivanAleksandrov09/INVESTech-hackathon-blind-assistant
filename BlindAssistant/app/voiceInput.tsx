@@ -34,6 +34,10 @@ export default function VoiceRecognition() {
   });
   useSpeechRecognitionEvent("result", (event) => {
     if (event?.results?.[0]?.transcript) {
+      if (event.results[0].transcript === transcriptRef.current) {
+        // No change
+        return;
+      }
       console.log(event.results[event.results.length - 1].transcript);
       if (event.results[event.results.length - 1].transcript.toLowerCase().includes("take photo") ||
           event.results[event.results.length - 1].transcript.toLowerCase().includes("take a photo")) {
